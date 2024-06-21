@@ -1,12 +1,32 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate } from 'react-router-dom';
+
+import { Formik } from 'formik';
+// import React, { useEffect, useState, useRef } from 'react';
+import * as Yup from 'yup';
+import { CustomerForm } from '../Components/CustomerForm';
+
 
 import { KolForm } from '@public-ui/react';
 import { KolSpin } from '@public-ui/react';
 import { KolButton } from '@public-ui/react';
 import { KolInputText } from '@public-ui/react';
 import { KolInputEmail } from '@public-ui/react';
+
+const customersSchema = {
+  companyName: Yup.string().required('Please enter'),
+            contact: Yup.string().required('Please enter'),
+            phoneNumber: Yup.string(),
+            email: Yup.string(),
+            addressLine1: Yup.string(),
+            addressLine2: Yup.string(),
+            addressLine3: Yup.string(),
+            city: Yup.string(),
+            stateProvince: Yup.string(),
+            postalCode: Yup.string(),
+            country: Yup.string(),
+};
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -30,6 +50,10 @@ export default function AddCustomer() {
 
       const { slug } = useParams();
       const navigate = useNavigate();
+
+      const formikRef = useRef(null);
+
+      const validationSchema = Yup.object().shape({...customersSchema});
 
       const [defaultValues, setDefaultValues] = useState([]);
     
@@ -81,6 +105,13 @@ export default function AddCustomer() {
 
 	return (
 	<>  
+  <Formik innerRef={formikRef} initialValues={defaultValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
+
+				<div>
+					<CustomerForm />
+				</div>
+				
+		</Formik>
         <KolSpin _show />
         <KolForm _requiredText="Sternchen heißt Pflichtfeld." _on={{
           onReset: () => {
