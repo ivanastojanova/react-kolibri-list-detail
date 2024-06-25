@@ -3,38 +3,49 @@ import { useForm } from "react-hook-form";
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { Formik } from 'formik';
-// import React, { useEffect, useState, useRef } from 'react';
 import * as Yup from 'yup';
 import { CustomerForm } from '../Components/CustomerForm';
 
+import { KolInputEmail, KolForm, KolSpin, KolButton, KolInputText } from '@public-ui/react';
+import type { FormikHelpers, FormikProps } from 'formik';
 
-import { KolForm } from '@public-ui/react';
-import { KolSpin } from '@public-ui/react';
-import { KolButton } from '@public-ui/react';
-import { KolInputText } from '@public-ui/react';
-import { KolInputEmail } from '@public-ui/react';
+
+export interface FormValues {
+  companyName: string,
+  contact: string,
+  phoneNumber: string,
+  email: string,
+  addressLine1: string,
+  addressLine2: string,
+  addressLine3: string,
+  city: string,
+  stateProvince: string,
+  postalCode: string,
+  country: string,
+}
 
 const customersSchema = {
   companyName: Yup.string().required('Please enter'),
-            contact: Yup.string().required('Please enter'),
-            phoneNumber: Yup.string(),
-            email: Yup.string(),
-            addressLine1: Yup.string(),
-            addressLine2: Yup.string(),
-            addressLine3: Yup.string(),
-            city: Yup.string(),
-            stateProvince: Yup.string(),
-            postalCode: Yup.string(),
-            country: Yup.string(),
+  contact: Yup.string().required('Please enter'),
+  phoneNumber: Yup.string(),
+  email: Yup.string(),
+  addressLine1: Yup.string(),
+  addressLine2: Yup.string(),
+  addressLine3: Yup.string(),
+  city: Yup.string(),
+  stateProvince: Yup.string(),
+  postalCode: Yup.string(),
+  country: Yup.string(),
 };
+
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
-const fetchCustomersDetails = async (id) => {
+const fetchCustomersDetails = async (id: string) => {
   try {
     const response = await fetch(`${apiUrl}/customers/${id}`);
     return await response.json();
-  } catch (e) {
+  } catch (e: any) {
     throw new Error(e);
   }
 };
@@ -51,11 +62,23 @@ export default function AddCustomer() {
       const { slug } = useParams();
       const navigate = useNavigate();
 
-      const formikRef = useRef(null);
+      const formikRef = useRef<FormikProps<FormValues>>(null);
 
       const validationSchema = Yup.object().shape({...customersSchema});
 
-      const [defaultValues, setDefaultValues] = useState([]);
+      const [defaultValues, setDefaultValues] = useState<FormValues>({
+        companyName: '',
+        contact: '',
+        phoneNumber: '',
+        email: '',
+        addressLine1: '',
+        addressLine2: '',
+        addressLine3: '',
+        city: '',
+        stateProvince: '',
+        postalCode: '',
+        country: '',
+      });
     
 
         
@@ -65,20 +88,6 @@ export default function AddCustomer() {
               // console.log(results)
             setDefaultValues({...results});
           });
-        } else {
-          setDefaultValues({ 
-            companyName: '',
-            contact: '',
-            phoneNumber: '',
-            email: '',
-            addressLine1: '',
-            addressLine2: '',
-            addressLine3: '',
-            city: '',
-            stateProvince: '',
-            postalCode: '',
-            country: '',
-          });
         }
       }, [slug]);
 
@@ -86,7 +95,7 @@ export default function AddCustomer() {
           reset(defaultValues);
       }, [defaultValues, reset]);
 
-      const onSubmit = (data) => {
+      const onSubmit = (data: any) => {
         console.log(data);
 
         const requestOptions = {
@@ -103,41 +112,56 @@ export default function AddCustomer() {
             })
       }
 
+      const handleSubmitFormik = async (_values: FormValues, formik: FormikHelpers<FormValues>) => {
+        // console.log(_values);
+        await formik.setTouched({});
+        const requestOptions = {
+          method: slug ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(_values)
+      };
+
+      fetch(`${apiUrl}/customers/${slug ? slug : ''}`, requestOptions)
+          .then(response => response.json())
+          .then((customer) => {
+              console.log(customer);
+              navigate(`/customers/${customer.id}`)
+          })
+      };
+
+      // const handleResetFormik = async (_values: FormValues, formik: FormikHelpers<FormValues>) => {
+      //   // console.log(_values);
+      //   await formik.setTouched({});
+      //   const requestOptions = {
+      //     method: slug ? 'PUT' : 'POST',
+      //     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      //     body: JSON.stringify(_values)
+      // };
+
+      // fetch(`${apiUrl}/customers/${slug ? slug : ''}`, requestOptions)
+      //     .then(response => response.json())
+      //     .then((customer) => {
+      //         console.log(customer);
+      //         navigate(`/customers/${customer.id}`)
+      //     })
+      // };
+
 	return (
 	<>  
-  <Formik innerRef={formikRef} initialValues={defaultValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
-
+  		<Formik<FormValues> innerRef={formikRef} enableReinitialize initialValues={defaultValues} validationSchema={validationSchema} onSubmit={handleSubmitFormik}>
 				<div>
 					<CustomerForm />
 				</div>
-				
-		</Formik>
+		  </Formik>
+        
         <KolSpin _show />
         <KolForm _requiredText="Sternchen heißt Pflichtfeld." _on={{
           onReset: () => {
             reset();
-            // reset((formValues) => ({
-            //   ...formValues
-            // }))
-            // console.log(data);
-            // reset({ 
-            //   id: defaultValues.id || null,
-            //   contact: defaultValues.contact || '',
-            //   companyName: defaultValues.companyName || '',
-            //   phoneNumber: defaultValues.phoneNumber || '',
-            //   email: defaultValues.email || '',
-            //   addressLine1: defaultValues.addressLine1 || '',
-            //   addressLine2: defaultValues.addressLine2 || '',
-            //   addressLine3: defaultValues.addressLine3 || '',
-            //   city: defaultValues.city || '',
-            //   stateProvince: defaultValues.stateProvince || '',
-            //   postalCode: defaultValues.postalCode || '',
-            //   country: defaultValues.country || '',
-            // });
           },
-          onSubmit: handleSubmit(onSubmit),
+          onSubmit: () => {handleSubmit(onSubmit)},
         }}>
-            <KolInputText {...register('companyName')} _label="Company name" _required="true" _on={{
+            <KolInputText {...register('companyName')} _label="Company name" _required={true} _on={{
               onChange: (_event, value) =>
                 setValue('companyName', value),
             }} _value={watch('companyName')}></KolInputText>

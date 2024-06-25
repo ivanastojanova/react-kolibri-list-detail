@@ -3,16 +3,18 @@ import Table from '../Components/Table';
 import { KolButton } from '@public-ui/react';
 import { createReactRenderElement } from '@public-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { createRoot } from 'react-dom/client';
 
 // helper function
-const REACT18_ROOTS = new WeakMap();
+import { createRoot, Root } from 'react-dom/client';
 
-const getRoot = (el) => {
+const REACT18_ROOTS = new WeakMap<Element | DocumentFragment, Root>();
+
+export const getRoot = (el: Element | DocumentFragment): Root => {
 	if (REACT18_ROOTS.has(el) === false) {
+		/* https://react.dev/reference/react-dom/client/createRoot */
 		REACT18_ROOTS.set(el, createRoot(el));
 	}
-	return REACT18_ROOTS.get(el);
+	return REACT18_ROOTS.get(el) as Root;
 };
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -22,7 +24,7 @@ const fetchCustomers = async () => {
     const response = await fetch(`${apiUrl}/customers`);
     const json = await response.json();
     return json.length ? json : [];
-  } catch (e) {
+  } catch (e: any) {
     throw new Error(e);
   }
 };
@@ -46,7 +48,7 @@ export default function Customers() {
           label: 'Go To',
           textAlign: 'center',
           key: '',
-          render: (el, cell) => {
+          render: (el: HTMLElement, cell: { data: { id: string | undefined; }; }) => {
             getRoot(createReactRenderElement(el)).render(
               <div>
                 <KolButton _label="Detail" _on={{onClick: onNavToDetail}} _id={cell.data.id}/>
@@ -59,9 +61,9 @@ export default function Customers() {
   };
   const navigate = useNavigate();
   
-  const onNavToDetail = (el) => {
+  const onNavToDetail = (e: any) => { // e type define
     // console.log(el.target.id);
-    navigate(`/customers/${el.target.id}`)
+    navigate(`/customers/${e.target.id}`)
   }
 
   const [results, setResults] = useState([]);

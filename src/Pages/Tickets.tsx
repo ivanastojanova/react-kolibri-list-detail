@@ -11,17 +11,17 @@ async function fetchResults() {
     const response = await fetch(`${apiUrl}/tickets`);
     const json = await response.json();
     return json.results.length ? json.results : [];
-  } catch (e) {
+  } catch (e: any) {
     throw new Error(e);
   }
 }
 
-const textFormatter = (el, cell, objectName, propertyName) => {
+const textFormatter = (el: { textContent: any; }, cell: { data: { [x: string]: { [x: string]: any; }; }; }, objectName: string, propertyName: string) => {
     el.textContent = cell.data && cell.data[objectName] ? cell.data[objectName][propertyName] : '-'
 
 }
 
-const HEADERS = {
+const HEADERS: any = { // fix the type
 	horizontal: [
 		[
 			{
@@ -29,7 +29,7 @@ const HEADERS = {
 				key: 'project',
 				textAlign: 'center',
 				width: '10em',
-				render: (el, cell) => { 
+				render: (el: { textContent: any; }, cell: { data: { [x: string]: { [x: string]: any; }; }; }) => { 
                     textFormatter(el, cell, 'project', 'projectName')
                 }
 			},
@@ -38,7 +38,7 @@ const HEADERS = {
 				key: 'employee',
 				textAlign: 'center',
 				width: '10em',
-                render: (el, cell) => { 
+                render: (el: { textContent: any; }, cell: { data: { [x: string]: { [x: string]: any; }; }; }) => { 
                     textFormatter(el, cell, 'employee', 'name')
                 }
 			},
@@ -67,17 +67,8 @@ export default function Customers() {
 	return (
 		<div>
 			<KolSpin _show />
-      <div><KolButton _label="Load"_on={{
-          onClick: onRefresh
-        }}></KolButton></div>
-
-      {/* {results.length > 0 && <KolTableStateful _data={results} _headers='{"horizontal": [[{"label":"Project","key":"project"}, {"label":"Employee","key":"employee"}, {"label":"Work performed", "key":"workPerformed"}]]}' _label={''}>
-        
-      </KolTableStateful>} */}
-
-      {results.length > 0 && <KolTableStateful _data={results} _headers={HEADERS} _label={''}>
-        
-      </KolTableStateful>}
+      		<div><KolButton _label="Load"_on={{onClick: onRefresh}} /></div>
+			{results.length > 0 && <KolTableStateful _data={results} _headers={HEADERS} _label={''} />}
 		</div>
 	);
 }

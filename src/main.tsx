@@ -11,7 +11,7 @@ import './index.css';
 
 register([DEFAULT], [defineCustomElements])
   .then(() => {
-    ReactDOM.createRoot(document.getElementById("root")).render(
+    return ReactDOM.createRoot(document.getElementById("root")!).render(
       <React.StrictMode>
         <BrowserRouter>
           <App />

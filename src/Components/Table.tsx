@@ -4,7 +4,7 @@ import { KolButton } from '@public-ui/react';
 import { KolTableStateful } from '@public-ui/react';
 
 
-export default function Table(props) {
+export default function Table(props: { data: any; headers: any; onRefresh: any; onAddNewItem: any; }) { // define Types for data, headers
     let { data, headers, onRefresh, onAddNewItem } = props;
     return (
     <>

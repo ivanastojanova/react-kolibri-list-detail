@@ -1,21 +1,28 @@
 import { Field, useFormikContext } from 'formik';
 import React, { useRef } from 'react';
 
-import { KolButton, KolForm, KolHeading, KolInputEmail, KolInputText, KolSelect } from '@public-ui/react';
+import { KolButton, KolForm, KolHeading, KolInputEmail, KolInputText } from '@public-ui/react';
 
-function createErrorList(formikErrors) {
+import type { FieldProps } from 'formik';
+import type { FormValues } from '../Pages/AddCustomer';
+
+import type { ErrorListPropType } from '@public-ui/components';
+
+// helper (utils)
+function createErrorList(formikErrors: Record<string, string>): ErrorListPropType[] {
 	return Object.keys(formikErrors).map((fieldName) => ({
 		message: formikErrors[fieldName],
 		selector: `#field-${fieldName}`,
 	}));
 }
 
-function focusErrorList(formikRef) {
+// helper (utils)
+function focusErrorList(formikRef: React.RefObject<HTMLKolFormElement>) {
 	formikRef.current?.focusErrorList().catch(console.warn);
 }
 
 export function CustomerForm() {
-	const form = useFormikContext();
+	const form = useFormikContext<FormValues>();
 	const errorList = createErrorList(form.errors);
 	const formikRef = useRef(null);
 
@@ -28,26 +35,28 @@ export function CustomerForm() {
 				_on={{
 					onSubmit: () => {
 						void form.submitForm();
-						setSectionSubmitted(true);
 						focusErrorList(formikRef);
 					},
+					onReset: () => {
+						void form.resetForm();
+					}
 				}}
 			>
 				<Field name="companyName">
-					{({ field }) => (
+					{({ field }: FieldProps<FormValues['companyName']>) => (
 						<div className="block mt-2">
 							<KolInputText
 								onBlur={() => {
 									void form.setFieldTouched('companyName', true);
 								}}
 								id="field-companyName"
-								_label="Vor- und Zuname"
+								_label="Company name"
 								_value={field.value}
 								_msg={{
 									_type: 'error',
 									_description: form.errors.companyName || '',
 								}}
-								_touched={form.touched.name}
+								_touched={form.touched.companyName}
 								_required
 								_on={{
 									onChange: (event, value) => {
@@ -62,20 +71,20 @@ export function CustomerForm() {
 				</Field>
 
                 <Field name="contact">
-					{({ field }) => (
+					{({ field }: FieldProps<FormValues['contact']>) => (
 						<div className="block mt-2">
 							<KolInputText
 								onBlur={() => {
 									void form.setFieldTouched('contact', true);
 								}}
 								id="field-contact"
-								_label="Vor- und Zuname"
+								_label="Contact"
 								_value={field.value}
 								_msg={{
 									_type: 'error',
 									_description: form.errors.contact || '',
 								}}
-								_touched={form.touched.name}
+								_touched={form.touched.contact}
 								_required
 								_on={{
 									onChange: (event, value) => {
@@ -90,21 +99,20 @@ export function CustomerForm() {
 				</Field>
 
                 <Field name="phoneNumber">
-					{({ field }) => (
+				{({ field }: FieldProps<FormValues['phoneNumber']>) => (
 						<div className="block mt-2">
 							<KolInputText
 								onBlur={() => {
 									void form.setFieldTouched('phoneNumber', true);
 								}}
 								id="field-phoneNumber"
-								_label="Vor- und Zuname"
+								_label="Phone Number"
 								_value={field.value}
 								_msg={{
 									_type: 'error',
 									_description: form.errors.phoneNumber || '',
 								}}
-								_touched={form.touched.name}
-								_required
+								_touched={form.touched.phoneNumber}
 								_on={{
 									onChange: (event, value) => {
 										if (event.target) {
@@ -118,21 +126,20 @@ export function CustomerForm() {
 				</Field>
                 
                 <Field name="addressLine1">
-					{({ field }) => (
+				{({ field }: FieldProps<FormValues['addressLine1']>) => (
 						<div className="block mt-2">
 							<KolInputText
 								onBlur={() => {
 									void form.setFieldTouched('addressLine1', true);
 								}}
 								id="field-addressLine1"
-								_label="Vor- und Zuname"
+								_label="Address Line 1"
 								_value={field.value}
 								_msg={{
 									_type: 'error',
 									_description: form.errors.addressLine1 || '',
 								}}
-								_touched={form.touched.name}
-								_required
+								_touched={form.touched.addressLine1}
 								_on={{
 									onChange: (event, value) => {
 										if (event.target) {
@@ -146,21 +153,20 @@ export function CustomerForm() {
 				</Field>
 
                 <Field name="addressLine2">
-					{({ field }) => (
+				{({ field }: FieldProps<FormValues['addressLine2']>) => (
 						<div className="block mt-2">
 							<KolInputText
 								onBlur={() => {
 									void form.setFieldTouched('addressLine2', true);
 								}}
 								id="field-addressLine2"
-								_label="Vor- und Zuname"
+								_label="Address Line 2"
 								_value={field.value}
 								_msg={{
 									_type: 'error',
 									_description: form.errors.addressLine2 || '',
 								}}
-								_touched={form.touched.name}
-								_required
+								_touched={form.touched.addressLine2}
 								_on={{
 									onChange: (event, value) => {
 										if (event.target) {
@@ -174,21 +180,20 @@ export function CustomerForm() {
 				</Field>
 
                 <Field name="addressLine3">
-					{({ field }) => (
+				{({ field }: FieldProps<FormValues['addressLine3']>) => (
 						<div className="block mt-2">
 							<KolInputText
 								onBlur={() => {
 									void form.setFieldTouched('addressLine3', true);
 								}}
 								id="field-addressLine3"
-								_label="Vor- und Zuname"
+								_label="Address Line 3"
 								_value={field.value}
 								_msg={{
 									_type: 'error',
 									_description: form.errors.addressLine3 || '',
 								}}
-								_touched={form.touched.name}
-								_required
+								_touched={form.touched.addressLine3}
 								_on={{
 									onChange: (event, value) => {
 										if (event.target) {
@@ -202,7 +207,7 @@ export function CustomerForm() {
 				</Field>
 
 				<Field name="email">
-					{({ field }) => (
+				{({ field }: FieldProps<FormValues['email']>) => (
 						<div className="block mt-2">
 							<KolInputEmail
 								onBlur={() => {
@@ -213,7 +218,6 @@ export function CustomerForm() {
 								_value={field.value}
 								_error={form.errors.email || ''}
 								_touched={form.touched.email}
-								_required
 								_on={{
 									onChange: (event, value) => {
 										if (event.target) {
@@ -226,33 +230,8 @@ export function CustomerForm() {
 					)}
 				</Field>
 
-				<Field name="phoneNumber">
-					{({ field }) => (
-						<div className="block mt-2">
-							<KolInputText
-								id="field-phoneNumber"
-								_type="tel"
-								_label="Telefonnumer"
-								_value={field.value}
-								_msg={{
-									_type: 'error',
-									_description: form.errors.phoneNumber || '',
-								}}
-								_touched={form.touched.phoneNumber}
-								_on={{
-									onChange: (event, value) => {
-										if (event.target) {
-											void form.setFieldTouched('phone', true);
-											void form.setFieldValue('phone', value, true);
-										}
-									},
-								}}
-							/>
-						</div>
-					)}
-				</Field>
-
-				<KolButton _label="Weiter" _type="submit" className="mt-2" />
+				<KolButton _label="Submit" _type="submit" className="mt-2 mr-2" />
+				<KolButton _label="Reset" _type="reset" _variant="danger" className="mt-2" />
 			</KolForm>
 		</div>
 	);
