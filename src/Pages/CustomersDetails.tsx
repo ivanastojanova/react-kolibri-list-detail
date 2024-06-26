@@ -5,26 +5,53 @@ import { KolSpin } from '@public-ui/react';
 import { KolButton } from '@public-ui/react';
 import { KolCard } from '@public-ui/react';
 
+export interface CustomerValues {
+  id?: string,
+  companyName: string,
+  contact: string,
+  phoneNumber: string,
+  email: string,
+  addressLine1: string,
+  addressLine2: string,
+  addressLine3: string,
+  city: string,
+  stateProvince: string,
+  postalCode: string,
+  country: string,
+  projects?: string[],
+}
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
-const fetchCustomersDetails = async (id) => {
+const fetchCustomersDetails = async (id: string | undefined) => {
   try {
     const response = await fetch(`${apiUrl}/customers/${id}`);
     return await response.json();
-  } catch (e) {
+  } catch (e: any) {
     throw new Error(e);
   }
 };
 
-
 export default function CustomersDetails() {
     const { slug } = useParams();
 
-    const [results, setResults] = useState([]);
+    const [results, setResults] = useState<CustomerValues>({
+      companyName: '',
+      contact: '',
+      phoneNumber: '',
+      email: '',
+      addressLine1: '',
+      addressLine2: '',
+      addressLine3: '',
+      city: '',
+      stateProvince: '',
+      postalCode: '',
+      country: '',
+    });
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchCustomersDetails(slug).then((results) => {
+        fetchCustomersDetails(slug).then((results: CustomerValues) => {
             // console.log(results)
           setResults(results);
         });

@@ -9,20 +9,7 @@ import { CustomerForm } from '../Components/CustomerForm';
 import { KolInputEmail, KolForm, KolSpin, KolButton, KolInputText } from '@public-ui/react';
 import type { FormikHelpers, FormikProps } from 'formik';
 
-
-export interface FormValues {
-  companyName: string,
-  contact: string,
-  phoneNumber: string,
-  email: string,
-  addressLine1: string,
-  addressLine2: string,
-  addressLine3: string,
-  city: string,
-  stateProvince: string,
-  postalCode: string,
-  country: string,
-}
+import type { CustomerValues } from '../Pages/CustomersDetails';
 
 const customersSchema = {
   companyName: Yup.string().required('Please enter'),
@@ -62,11 +49,11 @@ export default function AddCustomer() {
       const { slug } = useParams();
       const navigate = useNavigate();
 
-      const formikRef = useRef<FormikProps<FormValues>>(null);
+      const formikRef = useRef<FormikProps<CustomerValues>>(null);
 
       const validationSchema = Yup.object().shape({...customersSchema});
 
-      const [defaultValues, setDefaultValues] = useState<FormValues>({
+      const [defaultValues, setDefaultValues] = useState<CustomerValues>({
         companyName: '',
         contact: '',
         phoneNumber: '',
@@ -112,7 +99,7 @@ export default function AddCustomer() {
             })
       }
 
-      const handleSubmitFormik = async (_values: FormValues, formik: FormikHelpers<FormValues>) => {
+      const handleSubmitFormik = async (_values: CustomerValues, formik: FormikHelpers<CustomerValues>) => {
         // console.log(_values);
         await formik.setTouched({});
         const requestOptions = {
@@ -129,26 +116,9 @@ export default function AddCustomer() {
           })
       };
 
-      // const handleResetFormik = async (_values: FormValues, formik: FormikHelpers<FormValues>) => {
-      //   // console.log(_values);
-      //   await formik.setTouched({});
-      //   const requestOptions = {
-      //     method: slug ? 'PUT' : 'POST',
-      //     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      //     body: JSON.stringify(_values)
-      // };
-
-      // fetch(`${apiUrl}/customers/${slug ? slug : ''}`, requestOptions)
-      //     .then(response => response.json())
-      //     .then((customer) => {
-      //         console.log(customer);
-      //         navigate(`/customers/${customer.id}`)
-      //     })
-      // };
-
 	return (
 	<>  
-  		<Formik<FormValues> innerRef={formikRef} enableReinitialize initialValues={defaultValues} validationSchema={validationSchema} onSubmit={handleSubmitFormik}>
+  		<Formik<CustomerValues> innerRef={formikRef} enableReinitialize initialValues={defaultValues} validationSchema={validationSchema} onSubmit={handleSubmitFormik}>
 				<div>
 					<CustomerForm />
 				</div>
