@@ -20,22 +20,29 @@ export default function Customers() {
 
   const [results, setResults] = useState([]);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   async function onRefresh() {
-    const results = await fetchResults();
-    console.log(results);
+    setIsLoading(true);
+    let results = [];
+    try {
+      results = await fetchResults();
+    } finally {
+      setIsLoading(false);
+    }
+    // console.log(results);
     setResults(results);
   }
 
 
 	return (
 		<div>
-			<KolSpin _show />
-      <div><KolButton _label="Load"_on={{
-          onClick: onRefresh
-        }}></KolButton></div>
+      <KolButton _label="Load"_on={{onClick: onRefresh}} className="mt-2"></KolButton>
 
       {results.length > 0 && 
-        <KolTableStateful _data={results} _headers='{"horizontal": [[{"label":"Project","key":"projectName"}, {"label":"StartDate","key":"startDate"}, {"label":"EndDate", "key":"endDate"}]]}' _label={''} />}
+        <KolTableStateful className="mt-2" _data={results} _headers='{"horizontal": [[{"label":"Project","key":"projectName"}, {"label":"StartDate","key":"startDate"}, {"label":"EndDate", "key":"endDate"}]]}' _label={''} />}
+
+      <KolSpin _show={isLoading} className='spin' />
 		</div>
 	);
 }

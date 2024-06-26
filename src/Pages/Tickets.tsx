@@ -56,9 +56,16 @@ const HEADERS: any = { // fix the type
 export default function Customers() {
 
   const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function onRefresh() {
-    const results = await fetchResults();
+    setIsLoading(true);
+	let results = [];
+	try {
+		results = await fetchResults();
+	} finally {
+		setIsLoading(false);
+	}
     // console.log(results);
     setResults(results);
   }
@@ -66,9 +73,11 @@ export default function Customers() {
 
 	return (
 		<div>
-			<KolSpin _show />
-      		<div><KolButton _label="Load"_on={{onClick: onRefresh}} /></div>
-			{results.length > 0 && <KolTableStateful _data={results} _headers={HEADERS} _label={''} />}
+      		<KolButton _label="Load"_on={{onClick: onRefresh}} className="mt-2"></KolButton>
+			
+			{results.length > 0 && <KolTableStateful className="mt-2" _data={results} _headers={HEADERS} _label={''} />}
+
+			<KolSpin _show={isLoading} className='spin' />
 		</div>
 	);
 }

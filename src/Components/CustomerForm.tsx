@@ -4,7 +4,7 @@ import React, { useRef } from 'react';
 import { KolButton, KolForm, KolHeading, KolInputEmail, KolInputText } from '@public-ui/react';
 
 import type { FieldProps } from 'formik';
-import type { FormValues } from '../Pages/AddCustomer';
+import type { CustomerValues } from '../Pages/CustomersDetails';
 
 import type { ErrorListPropType } from '@public-ui/components';
 
@@ -22,7 +22,7 @@ function focusErrorList(formikRef: React.RefObject<HTMLKolFormElement>) {
 }
 
 export function CustomerForm() {
-	const form = useFormikContext<FormValues>();
+	const form = useFormikContext<CustomerValues>();
 	const errorList = createErrorList(form.errors);
 	const formikRef = useRef(null);
 
@@ -43,7 +43,7 @@ export function CustomerForm() {
 				}}
 			>
 				<Field name="companyName">
-					{({ field }: FieldProps<FormValues['companyName']>) => (
+					{({ field }: FieldProps<CustomerValues['companyName']>) => (
 						<div className="block mt-2">
 							<KolInputText
 								onBlur={() => {
@@ -71,7 +71,7 @@ export function CustomerForm() {
 				</Field>
 
                 <Field name="contact">
-					{({ field }: FieldProps<FormValues['contact']>) => (
+					{({ field }: FieldProps<CustomerValues['contact']>) => (
 						<div className="block mt-2">
 							<KolInputText
 								onBlur={() => {
@@ -99,7 +99,7 @@ export function CustomerForm() {
 				</Field>
 
                 <Field name="phoneNumber">
-				{({ field }: FieldProps<FormValues['phoneNumber']>) => (
+				{({ field }: FieldProps<CustomerValues['phoneNumber']>) => (
 						<div className="block mt-2">
 							<KolInputText
 								onBlur={() => {
@@ -126,7 +126,7 @@ export function CustomerForm() {
 				</Field>
                 
                 <Field name="addressLine1">
-				{({ field }: FieldProps<FormValues['addressLine1']>) => (
+				{({ field }: FieldProps<CustomerValues['addressLine1']>) => (
 						<div className="block mt-2">
 							<KolInputText
 								onBlur={() => {
@@ -153,7 +153,7 @@ export function CustomerForm() {
 				</Field>
 
                 <Field name="addressLine2">
-				{({ field }: FieldProps<FormValues['addressLine2']>) => (
+				{({ field }: FieldProps<CustomerValues['addressLine2']>) => (
 						<div className="block mt-2">
 							<KolInputText
 								onBlur={() => {
@@ -180,7 +180,7 @@ export function CustomerForm() {
 				</Field>
 
                 <Field name="addressLine3">
-				{({ field }: FieldProps<FormValues['addressLine3']>) => (
+				{({ field }: FieldProps<CustomerValues['addressLine3']>) => (
 						<div className="block mt-2">
 							<KolInputText
 								onBlur={() => {
@@ -207,7 +207,7 @@ export function CustomerForm() {
 				</Field>
 
 				<Field name="email">
-				{({ field }: FieldProps<FormValues['email']>) => (
+				{({ field }: FieldProps<CustomerValues['email']>) => (
 						<div className="block mt-2">
 							<KolInputEmail
 								onBlur={() => {

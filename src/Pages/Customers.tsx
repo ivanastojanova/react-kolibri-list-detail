@@ -67,16 +67,26 @@ export default function Customers() {
   }
 
   const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
+
     fetchCustomers().then((results) => {
       setResults(results);
+      setIsLoading(false);
     });
  }, []);
 
  // api function
   async function onRefresh() {
-    const results = await fetchCustomers();
+    setIsLoading(true);
+    let results = [];
+    try {
+      results = await fetchCustomers();
+    } finally {
+      setIsLoading(false);
+    }
     // console.log(results);
     setResults(results);
   }
@@ -87,7 +97,7 @@ export default function Customers() {
 
 	return (
 		<>
-      {results.length > 0 && <Table data={results} headers={HEADERS} onRefresh={onRefresh} onAddNewItem={onAddNewItem} />}
+      {results.length > 0 && <Table data={results} headers={HEADERS} onRefresh={onRefresh} onAddNewItem={onAddNewItem} isLoading={isLoading}/>}
     </>
 	);
 }
